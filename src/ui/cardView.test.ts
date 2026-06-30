@@ -21,22 +21,41 @@ describe("renderBirthdayCard", () => {
     );
   });
 
-  it("renders code-native dancing snails instead of the static hero image", () => {
+  it("renders floor-level code-native snails instead of the static hero image or oversized snails", () => {
     const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
 
     expect(html).toContain('data-snail-stage');
-    expect(html).toContain('data-dancing-snail');
-    expect(html).toContain('data-snail-shell');
+    expect(html).toContain('data-floor-snail-party');
+    expect(html).toContain('data-floor-dancing-snail');
+    expect(html).toContain('data-floor-snail-shell');
+    expect(html).toContain('data-floor-snail-facing');
+    expect(html).toContain('data-floor-snail-spin');
+    expect(html).not.toContain('class="snail-stage"');
+    expect(html).not.toContain('snail-lead');
+    expect(html).not.toContain('snail-hype');
+    expect(html).not.toContain('data-mini-snail');
     expect(html).not.toContain('data-hero-art');
     expect(html).not.toContain("<img");
   });
 
-  it("renders a decorative mini-snail party that starts with six snails and grows crowded", () => {
+  it("renders a decorative floor-snail crowd that can start from both sides", () => {
     const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
 
-    expect(html).toContain('data-mini-snail-party');
-    expect(html.match(/data-mini-snail="/g)).toHaveLength(30);
-    expect(html.match(/data-mini-snail-wave="opening"/g)).toHaveLength(6);
-    expect(html.match(/data-mini-snail-wave="pileup"/g)).toHaveLength(12);
+    expect(html.match(/data-floor-snail="/g)).toHaveLength(30);
+    expect(html.match(/data-floor-snail-side="left"/g)).toHaveLength(15);
+    expect(html.match(/data-floor-snail-side="right"/g)).toHaveLength(15);
+    expect(html.match(/data-floor-snail-wave="opening"/g)).toHaveLength(6);
+    expect(html.match(/data-floor-snail-wave="late"/g)).toHaveLength(14);
+    expect(html.match(/data-floor-snail-facing/g)).toHaveLength(30);
+    expect(html.match(/data-floor-snail-spin/g)).toHaveLength(30);
+  });
+
+  it("renders varied shell color variables for the floor-snail crowd", () => {
+    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+    const shellPrimaryColors = html.match(/--snail-shell-primary: hsl\([^)]+\)/g) ?? [];
+    const uniqueShellPrimaryColors = new Set(shellPrimaryColors);
+
+    expect(shellPrimaryColors).toHaveLength(30);
+    expect(uniqueShellPrimaryColors.size).toBeGreaterThan(20);
   });
 });

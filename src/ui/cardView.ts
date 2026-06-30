@@ -10,49 +10,49 @@ type DancingSnailOptions = {
   snailDataAttribute?: string;
 };
 
-type MiniSnailWave = "opening" | "rush" | "pileup";
+type FloorSnailSide = "left" | "right";
+type FloorSnailWave = "opening" | "middle" | "late";
 
-type MiniSnail = {
+type FloorSnail = {
   hue: number;
   id: number;
-  restRotation: number;
+  laneY: number;
   restScale: number;
-  restX: number;
-  restY: number;
-  wave: MiniSnailWave;
+  side: FloorSnailSide;
+  wave: FloorSnailWave;
 };
 
-const miniSnails: MiniSnail[] = [
-  { id: 1, wave: "opening", restX: -34, restY: 14, restScale: 0.86, restRotation: -12, hue: 0 },
-  { id: 2, wave: "opening", restX: -18, restY: -34, restScale: 0.72, restRotation: 18, hue: 70 },
-  { id: 3, wave: "opening", restX: 10, restY: -44, restScale: 0.78, restRotation: -24, hue: 135 },
-  { id: 4, wave: "opening", restX: 34, restY: -20, restScale: 0.68, restRotation: 16, hue: 205 },
-  { id: 5, wave: "opening", restX: 46, restY: 24, restScale: 0.84, restRotation: -8, hue: 285 },
-  { id: 6, wave: "opening", restX: -6, restY: 32, restScale: 0.76, restRotation: 10, hue: 330 },
-  { id: 7, wave: "rush", restX: -58, restY: -4, restScale: 0.62, restRotation: 28, hue: 35 },
-  { id: 8, wave: "rush", restX: 60, restY: -8, restScale: 0.6, restRotation: -30, hue: 100 },
-  { id: 9, wave: "rush", restX: -50, restY: 46, restScale: 0.7, restRotation: -18, hue: 160 },
-  { id: 10, wave: "rush", restX: 58, restY: 50, restScale: 0.72, restRotation: 22, hue: 230 },
-  { id: 11, wave: "rush", restX: -74, restY: 26, restScale: 0.58, restRotation: 12, hue: 300 },
-  { id: 12, wave: "rush", restX: 78, restY: 20, restScale: 0.6, restRotation: -16, hue: 15 },
-  { id: 13, wave: "rush", restX: -36, restY: 70, restScale: 0.74, restRotation: 26, hue: 80 },
-  { id: 14, wave: "rush", restX: 30, restY: 72, restScale: 0.76, restRotation: -20, hue: 145 },
-  { id: 15, wave: "rush", restX: -12, restY: 82, restScale: 0.64, restRotation: 8, hue: 215 },
-  { id: 16, wave: "rush", restX: 12, restY: -78, restScale: 0.56, restRotation: -8, hue: 275 },
-  { id: 17, wave: "rush", restX: -86, restY: -36, restScale: 0.54, restRotation: -32, hue: 340 },
-  { id: 18, wave: "rush", restX: 88, restY: -42, restScale: 0.54, restRotation: 34, hue: 55 },
-  { id: 19, wave: "pileup", restX: -28, restY: 104, restScale: 0.88, restRotation: -22, hue: 120 },
-  { id: 20, wave: "pileup", restX: -8, restY: 108, restScale: 0.92, restRotation: 18, hue: 185 },
-  { id: 21, wave: "pileup", restX: 14, restY: 106, restScale: 0.9, restRotation: -12, hue: 255 },
-  { id: 22, wave: "pileup", restX: 34, restY: 110, restScale: 0.86, restRotation: 24, hue: 315 },
-  { id: 23, wave: "pileup", restX: -42, restY: 124, restScale: 0.78, restRotation: 10, hue: 25 },
-  { id: 24, wave: "pileup", restX: -18, restY: 126, restScale: 0.84, restRotation: -30, hue: 95 },
-  { id: 25, wave: "pileup", restX: 6, restY: 124, restScale: 0.82, restRotation: 32, hue: 155 },
-  { id: 26, wave: "pileup", restX: 30, restY: 128, restScale: 0.78, restRotation: -26, hue: 225 },
-  { id: 27, wave: "pileup", restX: -30, restY: 142, restScale: 0.72, restRotation: 20, hue: 290 },
-  { id: 28, wave: "pileup", restX: -4, restY: 144, restScale: 0.78, restRotation: -14, hue: 350 },
-  { id: 29, wave: "pileup", restX: 22, restY: 142, restScale: 0.74, restRotation: 28, hue: 60 },
-  { id: 30, wave: "pileup", restX: 46, restY: 138, restScale: 0.68, restRotation: -18, hue: 170 },
+const floorSnails: FloorSnail[] = [
+  { id: 1, side: "left", wave: "opening", laneY: 38, restScale: 0.76, hue: 0 },
+  { id: 2, side: "right", wave: "opening", laneY: 48, restScale: 0.78, hue: 70 },
+  { id: 3, side: "left", wave: "opening", laneY: 60, restScale: 0.88, hue: 135 },
+  { id: 4, side: "right", wave: "opening", laneY: 70, restScale: 0.96, hue: 205 },
+  { id: 5, side: "left", wave: "opening", laneY: 82, restScale: 1.06, hue: 285 },
+  { id: 6, side: "right", wave: "opening", laneY: 30, restScale: 0.7, hue: 330 },
+  { id: 7, side: "left", wave: "middle", laneY: 44, restScale: 0.72, hue: 35 },
+  { id: 8, side: "right", wave: "middle", laneY: 54, restScale: 0.82, hue: 100 },
+  { id: 9, side: "left", wave: "middle", laneY: 68, restScale: 0.92, hue: 160 },
+  { id: 10, side: "right", wave: "middle", laneY: 78, restScale: 1.02, hue: 230 },
+  { id: 11, side: "left", wave: "middle", laneY: 24, restScale: 0.64, hue: 300 },
+  { id: 12, side: "right", wave: "middle", laneY: 36, restScale: 0.74, hue: 15 },
+  { id: 13, side: "left", wave: "middle", laneY: 52, restScale: 0.84, hue: 80 },
+  { id: 14, side: "right", wave: "middle", laneY: 62, restScale: 0.9, hue: 145 },
+  { id: 15, side: "left", wave: "middle", laneY: 74, restScale: 0.98, hue: 215 },
+  { id: 16, side: "right", wave: "middle", laneY: 86, restScale: 1.08, hue: 275 },
+  { id: 17, side: "left", wave: "late", laneY: 34, restScale: 0.68, hue: 340 },
+  { id: 18, side: "right", wave: "late", laneY: 42, restScale: 0.76, hue: 55 },
+  { id: 19, side: "left", wave: "late", laneY: 50, restScale: 0.8, hue: 120 },
+  { id: 20, side: "right", wave: "late", laneY: 58, restScale: 0.86, hue: 185 },
+  { id: 21, side: "left", wave: "late", laneY: 66, restScale: 0.94, hue: 255 },
+  { id: 22, side: "right", wave: "late", laneY: 72, restScale: 1, hue: 315 },
+  { id: 23, side: "left", wave: "late", laneY: 80, restScale: 1.06, hue: 25 },
+  { id: 24, side: "right", wave: "late", laneY: 88, restScale: 1.1, hue: 95 },
+  { id: 25, side: "left", wave: "late", laneY: 28, restScale: 0.66, hue: 155 },
+  { id: 26, side: "right", wave: "late", laneY: 32, restScale: 0.7, hue: 225 },
+  { id: 27, side: "left", wave: "late", laneY: 56, restScale: 0.84, hue: 290 },
+  { id: 28, side: "right", wave: "late", laneY: 64, restScale: 0.92, hue: 350 },
+  { id: 29, side: "left", wave: "late", laneY: 76, restScale: 1, hue: 60 },
+  { id: 30, side: "right", wave: "late", laneY: 84, restScale: 1.06, hue: 170 },
 ];
 
 function renderDancingSnail(className: string, shellClassName: string, options: DancingSnailOptions = {}): string {
@@ -68,10 +68,10 @@ function renderDancingSnail(className: string, shellClassName: string, options: 
       <defs>
         <radialGradient id="${gradientId}-shell" cx="46%" cy="44%" r="58%">
           <stop offset="0%" stop-color="#fffaf2" />
-          <stop offset="22%" stop-color="#ffe66b" />
-          <stop offset="47%" stop-color="#ff4fd8" />
-          <stop offset="72%" stop-color="#7de7ff" />
-          <stop offset="100%" stop-color="#2a1735" />
+          <stop offset="22%" style="stop-color: var(--snail-shell-primary, #ffe66b);" />
+          <stop offset="47%" style="stop-color: var(--snail-shell-secondary, #ff4fd8);" />
+          <stop offset="72%" style="stop-color: var(--snail-shell-accent, #7de7ff);" />
+          <stop offset="100%" style="stop-color: var(--snail-shell-shadow, #2a1735);" />
         </radialGradient>
         <linearGradient id="${gradientId}-body" x1="0%" x2="100%" y1="0%" y2="0%">
           <stop offset="0%" stop-color="#9fffc8" />
@@ -108,32 +108,40 @@ function renderDancingSnail(className: string, shellClassName: string, options: 
   `;
 }
 
-function renderMiniSnail(snail: MiniSnail): string {
+function renderFloorSnail(snail: FloorSnail): string {
   const snailNumber = String(snail.id).padStart(2, "0");
+  const shellSecondaryHue = (snail.hue + 118) % 360;
+  const shellAccentHue = (snail.hue + 214) % 360;
+  const shellShadowHue = (snail.hue + 268) % 360;
 
   return `
     <span
-      class="mini-snail"
-      data-mini-snail="${snailNumber}"
-      data-mini-snail-wave="${snail.wave}"
-      style="--mini-rest-x: ${snail.restX}%; --mini-rest-y: ${snail.restY}%; --mini-rest-scale: ${snail.restScale}; --mini-rest-rotation: ${snail.restRotation}deg; --mini-hue: ${snail.hue}deg;"
+      class="floor-snail"
+      data-floor-snail="${snailNumber}"
+      data-floor-snail-side="${snail.side}"
+      data-floor-snail-wave="${snail.wave}"
+      style="--floor-lane-y: ${snail.laneY}%; --floor-rest-scale: ${snail.restScale}; --floor-hue: ${snail.hue}deg; --snail-shell-primary: hsl(${snail.hue} 92% 62%); --snail-shell-secondary: hsl(${shellSecondaryHue} 88% 60%); --snail-shell-accent: hsl(${shellAccentHue} 90% 68%); --snail-shell-shadow: hsl(${shellShadowHue} 58% 24%);"
     >
-      ${renderDancingSnail(`mini-dancing-snail mini-dancing-snail-${snailNumber}`, "mini-shell", {
-        antennaeDataAttribute: "data-mini-snail-antennae",
-        ariaLabel: "A tiny disco snail dancing",
-        bodyDataAttribute: "data-mini-snail-body",
-        gradientId: `mini-snail-${snailNumber}`,
-        shellDataAttribute: "data-mini-snail-shell",
-        snailDataAttribute: "data-mini-dancing-snail",
-      })}
+      <span class="floor-snail-facing" data-floor-snail-facing>
+        <span class="floor-snail-spin" data-floor-snail-spin>
+          ${renderDancingSnail(`floor-dancing-snail floor-dancing-snail-${snailNumber}`, "floor-shell", {
+            antennaeDataAttribute: "data-floor-snail-antennae",
+            ariaLabel: "A tiny disco snail dancing",
+            bodyDataAttribute: "data-floor-snail-body",
+            gradientId: `floor-snail-${snailNumber}`,
+            shellDataAttribute: "data-floor-snail-shell",
+            snailDataAttribute: "data-floor-dancing-snail",
+          })}
+        </span>
+      </span>
     </span>
   `;
 }
 
-function renderMiniSnailParty(): string {
+function renderFloorSnailParty(): string {
   return `
-    <div class="mini-snail-party" data-mini-snail-party aria-hidden="true">
-      ${miniSnails.map(renderMiniSnail).join("")}
+    <div class="floor-snail-party" data-floor-snail-party aria-hidden="true">
+      ${floorSnails.map(renderFloorSnail).join("")}
     </div>
   `;
 }
@@ -171,7 +179,7 @@ export function renderBirthdayCard(viewModel: CardViewModel): string {
             <span></span>
           </div>
 
-          ${renderMiniSnailParty()}
+          ${renderFloorSnailParty()}
 
           <div class="light-rig" aria-hidden="true">
             <span class="beam beam-cyan"></span>
@@ -193,11 +201,6 @@ export function renderBirthdayCard(viewModel: CardViewModel): string {
             <span></span>
             <span></span>
             <span></span>
-          </div>
-
-          <div class="snail-stage" aria-hidden="true">
-            ${renderDancingSnail("snail-lead", "shell-lead")}
-            ${renderDancingSnail("snail-hype", "shell-hype")}
           </div>
         </div>
       </section>
