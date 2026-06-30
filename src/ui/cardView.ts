@@ -109,6 +109,10 @@ export function renderBirthdayCard(viewModel: CardViewModel): string {
         </div>
       </section>
 
+      <footer class="music-credit" aria-label="Music credit">
+        <small>Music: ${escapeHtml(viewModel.musicCredit)}</small>
+      </footer>
+
       <audio
         data-disco-audio
         src="${escapeHtml(viewModel.track.audioSrc)}"

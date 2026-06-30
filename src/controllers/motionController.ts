@@ -2,7 +2,6 @@ import { gsap } from "gsap";
 
 export type MotionController = {
   playIntro: () => void;
-  replay: () => void;
   destroy: () => void;
 };
 
@@ -13,7 +12,6 @@ export function createMotionController(root: HTMLElement): MotionController {
     root.dataset.motion = "reduced";
     return {
       playIntro: () => undefined,
-      replay: () => undefined,
       destroy: () => undefined,
     };
   }
@@ -71,7 +69,6 @@ export function createMotionController(root: HTMLElement): MotionController {
 
   return {
     playIntro: () => timeline.play(0),
-    replay: () => timeline.restart(),
     destroy: () => timeline.kill(),
   };
 }

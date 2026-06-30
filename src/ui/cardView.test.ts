@@ -12,6 +12,7 @@ describe("renderBirthdayCard", () => {
     expect(html).toContain('src="/audio/disco-snails.mp3"');
     expect(html).toContain('data-audio-toggle');
     expect(html).toContain('aria-pressed="false"');
+    expect(html).toContain("Music: Vulfmon &amp; Zachary Barker - Disco Snails");
     expect(html).not.toContain('data-replay-animation');
     expect(html).not.toContain('party-panel');
     expect(html).not.toContain("The slowest creatures in the garden somehow got the best table.");
