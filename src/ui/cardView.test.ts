@@ -30,4 +30,13 @@ describe("renderBirthdayCard", () => {
     expect(html).not.toContain('data-hero-art');
     expect(html).not.toContain("<img");
   });
+
+  it("renders a decorative mini-snail party that starts with six snails and grows crowded", () => {
+    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+
+    expect(html).toContain('data-mini-snail-party');
+    expect(html.match(/data-mini-snail="/g)).toHaveLength(30);
+    expect(html.match(/data-mini-snail-wave="opening"/g)).toHaveLength(6);
+    expect(html.match(/data-mini-snail-wave="pileup"/g)).toHaveLength(12);
+  });
 });
