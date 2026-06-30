@@ -1,0 +1,102 @@
+name: CI and Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck --if-present
+
+      - name: Run unit tests
+        run: npm test --if-present -- --passWithNoTests
+
+      - name: Detect Playwright tests
+        id: playwright
+        shell: bash
+        run: |
+          has_playwright=false
+
+          for config in playwright.config.ts playwright.config.js playwright.config.mjs playwright.config.cjs; do
+            if [ -f "$config" ]; then
+              has_playwright=true
+            fi
+          done
+
+          for directory in e2e tests/e2e src; do
+            if [ ! -d "$directory" ]; then
+              continue
+            fi
+
+            if find "$directory" -type f \( -name "*.e2e.*" -o -name "*.pw.*" -o -name "*.playwright.*" \) -print -quit | grep -q .; then
+              has_playwright=true
+            fi
+          done
+
+          echo "has_playwright=$has_playwright" >> "$GITHUB_OUTPUT"
+
+      - name: Install Playwright browsers
+        if: steps.playwright.outputs.has_playwright == 'true'
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        if: steps.playwright.outputs.has_playwright == 'true'
+        run: npm run e2e --if-present
+
+      - name: Build site
+        env:
+          SITE_BASE: ${{ vars.SITE_BASE || format('/{0}/', github.event.repository.name) }}
+        run: npm run build
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v5

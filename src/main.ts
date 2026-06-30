@@ -1,17 +1,42 @@
 import "./styles.css";
+import { createAudioController } from "./controllers/audioController";
+import { createConfettiController } from "./controllers/confettiController";
+import { createMotionController } from "./controllers/motionController";
+import { getCardRefs, updateAudioControl } from "./controllers/viewController";
+import { birthdayCardData } from "./data/birthdayCard";
+import { audioReducer, createInitialAudioState, type AudioEvent } from "./domain/audioState";
+import { createCardViewModel } from "./domain/cardViewModel";
+import { renderBirthdayCard } from "./ui/cardView";
 
-const root = document.querySelector<HTMLElement>("#app");
+const appRoot = document.querySelector<HTMLElement>("#app");
 
-if (!root) {
+if (!appRoot) {
   throw new Error("Missing #app root element.");
 }
 
-root.innerHTML = `
-  <main class="boilerplate-shell">
-    <section class="boilerplate-card" aria-labelledby="birthday-title">
-      <p class="eyebrow">Disco Snails Present</p>
-      <h1 id="birthday-title">Happy Birthday</h1>
-      <p>The dance floor is warming up.</p>
-    </section>
-  </main>
-`;
+let audioState = createInitialAudioState();
+
+function getViewModel() {
+  return createCardViewModel(birthdayCardData, audioState);
+}
+
+appRoot.innerHTML = renderBirthdayCard(getViewModel());
+
+const refs = getCardRefs(appRoot);
+const motionController = createMotionController(refs.root);
+const confettiController = createConfettiController(refs.confettiCanvas);
+
+function dispatchAudio(event: AudioEvent): void {
+  audioState = audioReducer(audioState, event);
+  updateAudioControl(refs, getViewModel().audioControl);
+}
+
+const audioController = createAudioController(refs.audio, dispatchAudio);
+
+refs.audioToggle.addEventListener("click", () => {
+  audioController.toggle(audioState);
+  confettiController.burst();
+});
+
+motionController.playIntro();
+window.setTimeout(() => confettiController.burst(), 550);
