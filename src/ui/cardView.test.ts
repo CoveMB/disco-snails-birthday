@@ -29,10 +29,25 @@ describe("renderBirthdayCard", () => {
 
     expect(html).toContain('data-entry-scene');
     expect(html).toContain('data-club-door');
+    expect(html).toMatch(
+      /<div class="club-door-glow"><\/div>\s*<\/div>\s*<span class="club-door-sign" data-club-door-sign>SNAIL DISCO<\/span>/,
+    );
     expect(html).toContain('data-security-snail');
+    expect(html).toContain('data-security-speech-bubble');
+    expect(html).toContain("ID please");
     expect(html).toContain('aria-label="Smiling snail security agent checking snail IDs"');
     expect(html).toContain('data-disco-scene');
     expect(html).toContain('data-floor-snail-party');
+    expect(html).not.toContain('security-badge');
+  });
+
+  it("marks the birthday transmission copy for reveal after the ID is shown", () => {
+    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+
+    expect(html).toContain('class="eyebrow entry-reveal entry-reveal-kicker"');
+    expect(html).toContain('data-entry-reveal="kicker"');
+    expect(html).toContain('class="entry-reveal entry-reveal-title"');
+    expect(html).toContain('data-entry-reveal="title"');
   });
 
   it("renders floor-level code-native snails instead of the static hero image or oversized snails", () => {

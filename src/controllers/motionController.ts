@@ -4,6 +4,7 @@ import {
   createFloorSnailStart,
   type DanceEvent,
   type FloorSnailDirection,
+  type FloorSnailMovementStep,
 } from "./floorSnailMotion";
 
 export type MotionController = {
@@ -71,13 +72,13 @@ export function createMotionController(root: HTMLElement): MotionController {
     return event.kind === "pause" || event.kind === "pause-spin" || event.kind === "pause-jump";
   }
 
-  function getSegmentXAtTime(startX: number, targetX: number, time: number, duration: number): number {
-    const progress = duration <= 0 ? 1 : Math.min(1, Math.max(0, time / duration));
+  function getMovementStepXAtTime(step: FloorSnailMovementStep, time: number): number {
+    const progress = step.duration <= 0 ? 1 : Math.min(1, Math.max(0, (time - step.startAt) / step.duration));
 
-    return startX + (targetX - startX) * progress;
+    return step.startX + (step.targetX - step.startX) * progress;
   }
 
-  function addMovementChunk(
+  function addMovementStepChunk(
     trafficTimeline: gsap.core.Timeline,
     floorSnail: HTMLElement,
     startAt: number,
@@ -103,6 +104,46 @@ export function createMotionController(root: HTMLElement): MotionController {
       },
       startAt,
     );
+  }
+
+  function addMovementStepChunks(
+    trafficTimeline: gsap.core.Timeline,
+    floorSnail: HTMLElement,
+    movementSteps: FloorSnailMovementStep[],
+    movementStartAt: number,
+    movementEndAt: number,
+    timelineStartAt: number,
+    direction: FloorSnailDirection,
+    laneY: number,
+    restScale: number,
+  ): number {
+    let timelineCursor = timelineStartAt;
+
+    movementSteps.forEach((movementStep) => {
+      const stepStartAt = movementStep.startAt;
+      const stepEndAt = movementStep.startAt + movementStep.duration;
+      const overlapStartAt = Math.max(movementStartAt, stepStartAt);
+      const overlapEndAt = Math.min(movementEndAt, stepEndAt);
+
+      if (overlapEndAt <= overlapStartAt) {
+        return;
+      }
+
+      addMovementStepChunk(
+        trafficTimeline,
+        floorSnail,
+        timelineCursor,
+        overlapEndAt - overlapStartAt,
+        getMovementStepXAtTime(movementStep, overlapEndAt),
+        direction,
+        laneY,
+        restScale,
+      );
+
+      timelineCursor += overlapEndAt - overlapStartAt;
+    });
+
+    return timelineCursor;
   }
 
   function addDanceEvent(
@@ -210,20 +251,19 @@ export function createMotionController(root: HTMLElement): MotionController {
 
     segment.danceEvents.forEach((event) => {
       const eventMovementTime = Math.max(movementCursor, Math.min(event.at, segment.duration));
-      const eventX = getSegmentXAtTime(currentX, segment.targetX, eventMovementTime, segment.duration);
 
-      addMovementChunk(
+      timelineCursor = addMovementStepChunks(
         trafficTimeline,
         floorSnail,
+        segment.movementSteps,
+        movementCursor,
+        eventMovementTime,
         timelineCursor,
-        eventMovementTime - movementCursor,
-        eventX,
         segment.movementDirection,
         laneY,
         restScale,
       );
 
-      timelineCursor += eventMovementTime - movementCursor;
       movementCursor = eventMovementTime;
 
       addDanceEvent(trafficTimeline, facingElement, spinElement, snailSvg, event, timelineCursor, segment.movementDirection);
@@ -233,12 +273,13 @@ export function createMotionController(root: HTMLElement): MotionController {
       }
     });
 
-    addMovementChunk(
+    addMovementStepChunks(
       trafficTimeline,
       floorSnail,
+      segment.movementSteps,
+      movementCursor,
+      segment.duration,
       timelineCursor,
-      segment.duration - movementCursor,
-      segment.targetX,
       segment.movementDirection,
       laneY,
       restScale,

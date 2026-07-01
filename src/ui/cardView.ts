@@ -154,7 +154,7 @@ function renderSecuritySnail(): string {
         gradientId: "security-snail",
         snailDataAttribute: "data-security-snail-svg",
       })}
-      <span class="security-badge" aria-hidden="true">ID</span>
+      <span class="security-speech-bubble" data-security-speech-bubble aria-hidden="true">ID please</span>
     </div>
   `;
 }
@@ -171,8 +171,8 @@ function renderClubDoorEntry(): string {
             <span class="club-door-window"></span>
           </div>
           <div class="club-door-glow"></div>
-          <span class="club-door-sign">SNAIL DISCO</span>
         </div>
+        <span class="club-door-sign" data-club-door-sign>SNAIL DISCO</span>
         ${renderSecuritySnail()}
       </div>
     </div>
@@ -186,8 +186,8 @@ export function renderBirthdayCard(viewModel: CardViewModel): string {
 
       <section class="hero" aria-labelledby="birthday-title">
         <div class="hero-copy" data-hero-copy>
-          <p class="eyebrow">${escapeHtml(viewModel.hero.kicker)}</p>
-          <h1 id="birthday-title">${escapeHtml(viewModel.hero.title)}</h1>
+          <p class="eyebrow entry-reveal entry-reveal-kicker" data-entry-reveal="kicker">${escapeHtml(viewModel.hero.kicker)}</p>
+          <h1 id="birthday-title" class="entry-reveal entry-reveal-title" data-entry-reveal="title">${escapeHtml(viewModel.hero.title)}</h1>
 
           <div class="action-row" aria-label="Birthday card controls">
             <button

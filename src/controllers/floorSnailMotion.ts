@@ -11,9 +11,18 @@ export type DanceEvent = {
   wiggleDistance?: number;
 };
 
+export type FloorSnailMovementStep = {
+  duration: number;
+  pixelsPerSecond: number;
+  startAt: number;
+  startX: number;
+  targetX: number;
+};
+
 export type FloorSnailSegment = {
   danceEvents: DanceEvent[];
   duration: number;
+  movementSteps: FloorSnailMovementStep[];
   movementDirection: FloorSnailDirection;
   nextDirection: FloorSnailDirection;
   pixelsPerSecond: number;
@@ -39,6 +48,11 @@ const delayedEntryStagger = 1.05;
 const delayedEntryRandomness = 4.6;
 const minimumPixelsPerSecond = 8;
 const maximumPixelsPerSecond = 36;
+const speedChangeChance = 0.62;
+const minimumSpeedMultiplier = 0.78;
+const maximumSpeedMultiplier = 1.22;
+const minimumMovementStepDuration = 0.2;
+const minimumSegmentDuration = 4.5;
 
 function randomBetween(rng: () => number, minimum: number, maximum: number): number {
   return minimum + (maximum - minimum) * rng();
@@ -178,6 +192,72 @@ export function createDanceEvents(segmentDuration: number, rng: () => number = M
   return events.sort((first, second) => first.at - second.at);
 }
 
+function createMovementStepCount(rng: () => number): number {
+  if (rng() > speedChangeChance) {
+    return 1;
+  }
+
+  return 2 + Math.floor(rng() * 3);
+}
+
+function createMovementSteps(
+  currentX: number,
+  targetX: number,
+  basePixelsPerSecond: number,
+  rng: () => number = Math.random,
+): FloorSnailMovementStep[] {
+  const distance = Math.abs(targetX - currentX);
+  const direction = createFloorSnailMovementDirection(currentX, targetX, 1);
+  const stepCount = distance <= 0 ? 1 : createMovementStepCount(rng);
+  const stepDistance = stepCount <= 0 ? 0 : distance / stepCount;
+  let startAt = 0;
+
+  const movementSteps = Array.from({ length: stepCount }, (_, index) => {
+    const startX = currentX + direction * stepDistance * index;
+    const stepTargetX = index === stepCount - 1 ? targetX : currentX + direction * stepDistance * (index + 1);
+    const speedMultiplier =
+      stepCount === 1 ? 1 : randomBetween(rng, minimumSpeedMultiplier, maximumSpeedMultiplier);
+    const pixelsPerSecond = Math.max(1, basePixelsPerSecond * speedMultiplier);
+    const duration = Math.max(minimumMovementStepDuration, Math.abs(stepTargetX - startX) / pixelsPerSecond);
+    const step: FloorSnailMovementStep = {
+      duration,
+      pixelsPerSecond,
+      startAt,
+      startX,
+      targetX: stepTargetX,
+    };
+
+    startAt += duration;
+
+    return step;
+  });
+
+  const finalMovementStep = movementSteps.at(-1);
+  const totalDuration = (finalMovementStep?.startAt ?? 0) + (finalMovementStep?.duration ?? 0);
+
+  if (totalDuration >= minimumSegmentDuration) {
+    return movementSteps;
+  }
+
+  const durationScale = totalDuration <= 0 ? 1 : minimumSegmentDuration / totalDuration;
+  let scaledStartAt = 0;
+
+  return movementSteps.map((movementStep) => {
+    const duration = movementStep.duration * durationScale;
+    const distance = Math.abs(movementStep.targetX - movementStep.startX);
+    const scaledMovementStep = {
+      ...movementStep,
+      duration,
+      pixelsPerSecond: duration <= 0 ? movementStep.pixelsPerSecond : distance / duration,
+      startAt: scaledStartAt,
+    };
+
+    scaledStartAt += duration;
+
+    return scaledMovementStep;
+  });
+}
+
 export function createFloorSnailSegment(
   currentX: number,
   direction: FloorSnailDirection,
@@ -190,13 +270,15 @@ export function createFloorSnailSegment(
   const earlyDistance = randomBetween(rng, floorWidth * minimumEarlyTurnRatio, floorWidth * maximumEarlyTurnRatio);
   const earlyTarget = currentX + direction * earlyDistance;
   const targetX = crossesFloor ? farTarget : clamp(earlyTarget, -floorWidth * 0.04, floorWidth * 1.04);
-  const distance = Math.abs(targetX - currentX);
   const pixelsPerSecond = randomBetween(rng, minimumPixelsPerSecond, maximumPixelsPerSecond);
-  const duration = Math.max(4.5, distance / pixelsPerSecond);
+  const movementSteps = createMovementSteps(currentX, targetX, pixelsPerSecond, rng);
+  const finalMovementStep = movementSteps.at(-1);
+  const duration = (finalMovementStep?.startAt ?? 0) + (finalMovementStep?.duration ?? 0);
 
   return {
     danceEvents: createDanceEvents(duration, rng),
     duration,
+    movementSteps,
     movementDirection: createFloorSnailMovementDirection(currentX, targetX, direction),
     nextDirection: direction === 1 ? -1 : 1,
     pixelsPerSecond,

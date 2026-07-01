@@ -106,6 +106,34 @@ h1 {
   letter-spacing: 0;
 }
 
+.entry-reveal {
+  opacity: 0;
+  visibility: hidden;
+  filter: blur(0.42rem);
+  transform: translateY(0.9rem) scale(0.98);
+  transform-origin: left center;
+  transition:
+    opacity 0.48s ease,
+    transform 0.56s cubic-bezier(0.2, 0.74, 0.22, 1),
+    filter 0.48s ease;
+  will-change: opacity, transform, filter;
+}
+
+.entry-reveal-kicker {
+  transition-delay: 0.04s;
+}
+
+.entry-reveal-title {
+  transition-delay: 0.12s;
+}
+
+[data-entry-state="entered"] .entry-reveal {
+  opacity: 1;
+  visibility: visible;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
 .action-row {
   display: flex;
   flex-wrap: wrap;
@@ -217,6 +245,8 @@ h1 {
 }
 
 .disco-scene {
+  --disco-room-side-inset: 12%;
+  --disco-room-mobile-side-inset: 8%;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.42s ease;
@@ -233,6 +263,10 @@ h1 {
 }
 
 .club-door-scene {
+  --club-door-right: 4%;
+  --club-door-bottom: 9%;
+  --club-door-width: min(19rem, 62vw);
+  --club-door-height: min(25rem, 76vw);
   position: relative;
   display: grid;
   align-items: end;
@@ -243,10 +277,10 @@ h1 {
 
 .club-door-frame {
   position: absolute;
-  right: 4%;
-  bottom: 9%;
-  width: min(19rem, 62vw);
-  height: min(25rem, 76vw);
+  right: var(--club-door-right);
+  bottom: var(--club-door-bottom);
+  width: var(--club-door-width);
+  height: var(--club-door-height);
   max-height: 28rem;
   overflow: hidden;
   border: 0.24rem solid rgba(255, 250, 242, 0.82);
@@ -304,19 +338,22 @@ h1 {
 
 .club-door-sign {
   position: absolute;
-  top: 0.85rem;
-  left: 50%;
-  z-index: 2;
-  width: max-content;
-  padding: 0.36rem 0.58rem;
-  border: 1px solid rgba(255, 230, 107, 0.62);
+  right: var(--club-door-right);
+  bottom: calc(var(--club-door-bottom) + var(--club-door-height) + 0.55rem);
+  z-index: 6;
+  width: var(--club-door-width);
+  padding: 0.52rem 0.74rem;
+  border: 2px solid rgba(255, 230, 107, 0.7);
   border-radius: 8px;
   color: #ffe66b;
   background: rgba(17, 17, 18, 0.76);
-  font-size: 0.72rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.35rem);
   font-weight: 900;
   letter-spacing: 0;
-  transform: translateX(-50%);
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 0 0.7rem rgba(255, 230, 107, 0.55);
+  box-shadow: 0 0.8rem 1.7rem rgba(0, 0, 0, 0.28);
 }
 
 [data-entry-state="entered"] .club-door-panel-left {
@@ -348,30 +385,48 @@ h1 {
   filter: drop-shadow(0 1.1rem 0.9rem rgba(0, 0, 0, 0.44));
 }
 
-.security-badge {
+.security-speech-bubble {
   position: absolute;
-  right: 14%;
-  bottom: 21%;
+  top: -0.25rem;
+  right: -0.65rem;
+  z-index: 6;
   display: grid;
   place-items: center;
-  width: 2.2rem;
-  aspect-ratio: 1;
+  padding: 0.46rem 0.72rem;
   border: 2px solid #111112;
-  border-radius: 50%;
+  border-radius: 999px;
   color: #111112;
-  background: #ffe66b;
-  font-size: 0.78rem;
+  background: #fffaf2;
+  font-size: clamp(0.76rem, 1.4vw, 0.95rem);
   font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
   box-shadow: 0 0.35rem 0.8rem rgba(0, 0, 0, 0.28);
+  transform: rotate(3deg);
+}
+
+.security-speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: 1.25rem;
+  bottom: -0.54rem;
+  width: 1rem;
+  height: 0.72rem;
+  border-right: 2px solid #111112;
+  border-bottom: 2px solid #111112;
+  background: #fffaf2;
+  clip-path: polygon(0 0, 100% 0, 22% 100%);
+  transform: rotate(7deg);
 }
 
 .disco-scene::after {
   content: "";
   position: absolute;
-  right: 0;
+  left: var(--disco-room-side-inset);
+  right: var(--disco-room-side-inset);
   bottom: 3%;
   z-index: 0;
-  width: 96%;
+  width: auto;
   height: 30%;
   border: 1px solid rgba(255, 250, 242, 0.14);
   border-radius: 8px 8px 0 0;
@@ -442,12 +497,13 @@ h1 {
 
 .dance-floor {
   position: absolute;
-  right: 0;
+  left: var(--disco-room-side-inset);
+  right: var(--disco-room-side-inset);
   bottom: 3%;
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  width: 96%;
+  width: auto;
   height: 30%;
   border-radius: 8px 8px 0 0;
   overflow: hidden;
@@ -501,10 +557,11 @@ h1 {
 
 .floor-snail-party {
   position: absolute;
-  right: 0;
+  left: var(--disco-room-side-inset);
+  right: var(--disco-room-side-inset);
   bottom: 3%;
   z-index: 3;
-  width: 96%;
+  width: auto;
   height: 30%;
   overflow: visible;
   pointer-events: none;
@@ -637,8 +694,8 @@ h1 {
     translate: -50% 0;
   }
 
-  .floor-snail-party {
-    width: 100%;
+  .disco-scene {
+    --disco-room-side-inset: var(--disco-room-mobile-side-inset);
   }
 }
 
@@ -664,12 +721,9 @@ h1 {
   }
 
   .club-door-scene {
+    --club-door-right: 0;
+    --club-door-width: min(16rem, 74vw);
     min-height: 24rem;
-  }
-
-  .club-door-frame {
-    right: 0;
-    width: min(16rem, 74vw);
   }
 
   .security-snail {
@@ -681,17 +735,8 @@ h1 {
     top: 0.7rem;
   }
 
-  .floor-snail-party {
-    width: 100%;
-  }
-
   .floor-snail {
     width: clamp(2.75rem, 12vw, 4.7rem);
-  }
-
-  .dance-floor,
-  .disco-scene::after {
-    width: 100%;
   }
 }
 

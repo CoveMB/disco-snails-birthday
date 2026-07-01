@@ -70,6 +70,27 @@ describe("floor snail motion helpers", () => {
     expect(slow.duration).toBeGreaterThan(fast.duration * 3);
   });
 
+  it("can split a segment into movement steps with subtle speed changes", () => {
+    const segment = createFloorSnailSegment(0, 1, 1000, sequenceRng([0.1, 0.5, 0.5, 0.2, 0.8, 0.2, 0.5, 0.8]));
+    const movementSpeeds = new Set(segment.movementSteps.map((step) => step.pixelsPerSecond));
+    const finalStep = segment.movementSteps.at(-1);
+
+    expect(segment.movementSteps.length).toBeGreaterThan(1);
+    expect(movementSpeeds.size).toBeGreaterThan(1);
+    expect(segment.movementSteps.every((step) => step.duration > 0)).toBe(true);
+    expect(segment.movementSteps[0]?.startX).toBe(0);
+    expect(finalStep?.targetX).toBe(segment.targetX);
+    expect((finalStep?.startAt ?? 0) + (finalStep?.duration ?? 0)).toBeCloseTo(segment.duration);
+  });
+
+  it("keeps movement steps stretched across the full minimum segment duration", () => {
+    const segment = createFloorSnailSegment(0, 1, 10, sequenceRng([0.1, 0.5, 1, 0.95]));
+    const finalStep = segment.movementSteps.at(-1);
+
+    expect(segment.duration).toBeGreaterThanOrEqual(4.5);
+    expect((finalStep?.startAt ?? 0) + (finalStep?.duration ?? 0)).toBeCloseTo(segment.duration);
+  });
+
   it("can reverse before reaching the far side", () => {
     const segment = createFloorSnailSegment(500, 1, 1000, sequenceRng([0.9, 0.1, 0.5, 0.8]));
 
