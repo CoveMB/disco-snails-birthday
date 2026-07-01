@@ -32,7 +32,6 @@ export function createMotionController(root: HTMLElement): MotionController {
 
   root.dataset.motion = "full";
 
-  const heroCopy = root.querySelector<HTMLElement>("[data-hero-copy]");
   const mirrorBall = root.querySelector<HTMLElement>("[data-mirror-ball]");
   const floorSnailParty = root.querySelector<HTMLElement>("[data-floor-snail-party]");
   const beams = Array.from(root.querySelectorAll<HTMLElement>(".beam"));
@@ -46,7 +45,6 @@ export function createMotionController(root: HTMLElement): MotionController {
   const danceTiles = Array.from(root.querySelectorAll<HTMLElement>(".dance-floor span"));
 
   if (
-    !heroCopy ||
     !mirrorBall ||
     !floorSnailParty ||
     floorSnails.length === 0 ||
@@ -61,6 +59,7 @@ export function createMotionController(root: HTMLElement): MotionController {
   const floorSnailPartyElement = floorSnailParty;
   const floorTraffic = new Set<gsap.core.Timeline>();
   let floorTrafficStarted = false;
+  let hasPlayedIntro = false;
 
   function stopFloorTraffic(): void {
     floorTraffic.forEach((trafficTimeline) => trafficTimeline.kill());
@@ -307,10 +306,9 @@ export function createMotionController(root: HTMLElement): MotionController {
   });
 
   timeline
-    .set([heroCopy, mirrorBall, floorSnailParty], {
+    .set([mirrorBall, floorSnailParty], {
       opacity: 0,
     })
-    .set(heroCopy, { y: 26 })
     .set(mirrorBall, { y: -34, rotation: -24 })
     .set(beams, { opacity: 0, scaleY: 0.6 })
     .set(floorSnails, { opacity: 0, scale: 0.35, x: 0, xPercent: -50, y: 0, yPercent: -50 })
@@ -319,7 +317,6 @@ export function createMotionController(root: HTMLElement): MotionController {
     .set(floorSnailShells, { rotation: -18, transformOrigin: "50% 50%" })
     .set(floorSnailAntennae, { rotation: -8, transformOrigin: "62% 100%" })
     .addLabel("open")
-    .to(heroCopy, { opacity: 1, y: 0 }, "open")
     .to(mirrorBall, { opacity: 1, y: 0, rotation: 0 }, "open+=0.18")
     .to(beams, { opacity: 0.64, scaleY: 1, stagger: 0.1 }, "open+=0.32")
     .to(danceTiles, { opacity: 1, y: 0, stagger: 0.04 }, "open+=0.44")
@@ -335,6 +332,11 @@ export function createMotionController(root: HTMLElement): MotionController {
 
   return {
     playIntro: () => {
+      if (hasPlayedIntro) {
+        return;
+      }
+
+      hasPlayedIntro = true;
       stopFloorTraffic();
       timeline.play(0);
     },

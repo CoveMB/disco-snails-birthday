@@ -146,9 +146,42 @@ function renderFloorSnailParty(): string {
   `;
 }
 
+function renderSecuritySnail(): string {
+  return `
+    <div class="security-snail" data-security-snail>
+      ${renderDancingSnail("security-dancing-snail", "security-shell", {
+        ariaLabel: "Smiling snail security agent checking snail IDs",
+        gradientId: "security-snail",
+        snailDataAttribute: "data-security-snail-svg",
+      })}
+      <span class="security-badge" aria-hidden="true">ID</span>
+    </div>
+  `;
+}
+
+function renderClubDoorEntry(): string {
+  return `
+    <div class="entry-scene" data-entry-scene aria-hidden="true">
+      <div class="club-door-scene">
+        <div class="club-door-frame" data-club-door>
+          <div class="club-door-panel club-door-panel-left">
+            <span class="club-door-window"></span>
+          </div>
+          <div class="club-door-panel club-door-panel-right">
+            <span class="club-door-window"></span>
+          </div>
+          <div class="club-door-glow"></div>
+          <span class="club-door-sign">SNAIL DISCO</span>
+        </div>
+        ${renderSecuritySnail()}
+      </div>
+    </div>
+  `;
+}
+
 export function renderBirthdayCard(viewModel: CardViewModel): string {
   return `
-    <main class="page-shell" data-card-root>
+    <main class="page-shell" data-card-root data-entry-state="waiting">
       <canvas class="confetti-canvas" data-confetti-canvas aria-hidden="true"></canvas>
 
       <section class="hero" aria-labelledby="birthday-title">
@@ -175,32 +208,36 @@ export function renderBirthdayCard(viewModel: CardViewModel): string {
         </div>
 
         <div class="stage" data-snail-stage aria-label="Animated disco snails birthday scene">
-          <div class="mirror-ball" data-mirror-ball aria-hidden="true">
-            <span></span>
-          </div>
+          ${renderClubDoorEntry()}
 
-          ${renderFloorSnailParty()}
+          <div class="disco-scene" data-disco-scene aria-hidden="true">
+            <div class="mirror-ball" data-mirror-ball aria-hidden="true">
+              <span></span>
+            </div>
 
-          <div class="light-rig" aria-hidden="true">
-            <span class="beam beam-cyan"></span>
-            <span class="beam beam-pink"></span>
-            <span class="beam beam-gold"></span>
-          </div>
+            ${renderFloorSnailParty()}
 
-          <div class="snail-track" aria-hidden="true">
-            <span class="snail-trail trail-one"></span>
-            <span class="snail-trail trail-two"></span>
-          </div>
+            <div class="light-rig" aria-hidden="true">
+              <span class="beam beam-cyan"></span>
+              <span class="beam beam-pink"></span>
+              <span class="beam beam-gold"></span>
+            </div>
 
-          <div class="dance-floor" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <div class="snail-track" aria-hidden="true">
+              <span class="snail-trail trail-one"></span>
+              <span class="snail-trail trail-two"></span>
+            </div>
+
+            <div class="dance-floor" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
       </section>

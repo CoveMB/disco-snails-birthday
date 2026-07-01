@@ -10,6 +10,6 @@ describe("createCardViewModel", () => {
     expect(viewModel.hero.title).toBe("Happy Birthday");
     expect(viewModel.hero.kicker).toContain("Disco Snails");
     expect(viewModel.track.audioSrc).toBe("/audio/disco-snails.mp3");
-    expect(viewModel.audioControl.label).toBe("Start the disco");
+    expect(viewModel.audioControl.label).toBe("Show your snail ID and enter the disco");
   });
 });

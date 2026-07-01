@@ -5,12 +5,15 @@ import { birthdayCardData } from "../data/birthdayCard";
 import { renderBirthdayCard } from "./cardView";
 
 describe("renderBirthdayCard", () => {
-  it("renders the card shell, audio asset, and controlled play button", () => {
+  it("renders the card shell, audio asset, and snail ID entry control", () => {
     const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
 
     expect(html).toContain('data-card-root');
+    expect(html).toContain('data-entry-state="waiting"');
     expect(html).toContain('src="/audio/disco-snails.mp3"');
     expect(html).toContain('data-audio-toggle');
+    expect(html).toContain("Show your snail ID and enter the disco");
+    expect(html).toContain("Music starts after you show your snail ID.");
     expect(html).toContain('aria-pressed="false"');
     expect(html).toContain("Music: Vulfmon &amp; Zachary Barker - Disco Snails");
     expect(html).not.toContain('data-replay-animation');
@@ -19,6 +22,17 @@ describe("renderBirthdayCard", () => {
     expect(html).not.toContain(
       "Tonight has mirror-ball shell polish, tiny dance-floor ambition, and a suspicious amount of glitter for something moving this slowly.",
     );
+  });
+
+  it("renders the initial club-door entry scene alongside the disco layer", () => {
+    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+
+    expect(html).toContain('data-entry-scene');
+    expect(html).toContain('data-club-door');
+    expect(html).toContain('data-security-snail');
+    expect(html).toContain('aria-label="Smiling snail security agent checking snail IDs"');
+    expect(html).toContain('data-disco-scene');
+    expect(html).toContain('data-floor-snail-party');
   });
 
   it("renders floor-level code-native snails instead of the static hero image or oversized snails", () => {

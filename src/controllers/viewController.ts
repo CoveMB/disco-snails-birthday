@@ -36,3 +36,7 @@ export function updateAudioControl(refs: CardRefs, control: AudioControlView): v
   refs.audioLabel.textContent = control.label;
   refs.audioStatus.textContent = control.statusText;
 }
+
+export function markEntered(refs: CardRefs): void {
+  refs.root.dataset.entryState = "entered";
+}

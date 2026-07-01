@@ -118,8 +118,12 @@ h1 {
   align-items: center;
   justify-content: center;
   min-height: 3rem;
+  padding: 0.72rem 1rem;
   border-radius: 8px;
   cursor: pointer;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
 }
 
 .primary-action {
@@ -147,6 +151,7 @@ h1 {
 }
 
 .play-glyph {
+  flex: 0 0 auto;
   width: 0;
   height: 0;
   border-top: 0.44rem solid transparent;
@@ -195,7 +200,172 @@ h1 {
   isolation: isolate;
 }
 
-.stage::after {
+.entry-scene,
+.disco-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.entry-scene {
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  opacity: 1;
+  transition:
+    opacity 0.42s ease,
+    transform 0.42s ease;
+}
+
+.disco-scene {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.42s ease;
+}
+
+[data-entry-state="entered"] .entry-scene {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-0.8rem) scale(0.98);
+}
+
+[data-entry-state="entered"] .disco-scene {
+  opacity: 1;
+}
+
+.club-door-scene {
+  position: relative;
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  width: min(31rem, 100%);
+  min-height: clamp(23rem, 46vw, 34rem);
+}
+
+.club-door-frame {
+  position: absolute;
+  right: 4%;
+  bottom: 9%;
+  width: min(19rem, 62vw);
+  height: min(25rem, 76vw);
+  max-height: 28rem;
+  overflow: hidden;
+  border: 0.24rem solid rgba(255, 250, 242, 0.82);
+  border-radius: 8px 8px 0 0;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 230, 107, 0.28), transparent 24%),
+    linear-gradient(180deg, rgba(125, 231, 255, 0.16), rgba(17, 17, 18, 0.92));
+  box-shadow:
+    0 0 2rem rgba(125, 231, 255, 0.28),
+    inset 0 0 2rem rgba(0, 0, 0, 0.34);
+}
+
+.club-door-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background:
+    linear-gradient(180deg, rgba(255, 79, 216, 0.32), transparent 44%),
+    linear-gradient(135deg, #281a34, #111112);
+  transition: transform 0.72s cubic-bezier(0.2, 0.74, 0.22, 1);
+}
+
+.club-door-panel-left {
+  left: 0;
+  border-right: 1px solid rgba(255, 250, 242, 0.24);
+  transform-origin: left center;
+}
+
+.club-door-panel-right {
+  right: 0;
+  border-left: 1px solid rgba(255, 250, 242, 0.24);
+  transform-origin: right center;
+}
+
+.club-door-window {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 250, 242, 0.58);
+  background: rgba(125, 231, 255, 0.22);
+  transform: translateX(-50%);
+}
+
+.club-door-glow {
+  position: absolute;
+  inset: 9% 17% 0;
+  background: linear-gradient(180deg, rgba(255, 230, 107, 0.5), rgba(255, 79, 216, 0.2), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease 0.16s;
+}
+
+.club-door-sign {
+  position: absolute;
+  top: 0.85rem;
+  left: 50%;
+  z-index: 2;
+  width: max-content;
+  padding: 0.36rem 0.58rem;
+  border: 1px solid rgba(255, 230, 107, 0.62);
+  border-radius: 8px;
+  color: #ffe66b;
+  background: rgba(17, 17, 18, 0.76);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  transform: translateX(-50%);
+}
+
+[data-entry-state="entered"] .club-door-panel-left {
+  transform: perspective(22rem) rotateY(-72deg);
+}
+
+[data-entry-state="entered"] .club-door-panel-right {
+  transform: perspective(22rem) rotateY(72deg);
+}
+
+[data-entry-state="entered"] .club-door-glow {
+  opacity: 1;
+}
+
+.security-snail {
+  --snail-shell-primary: #ffe66b;
+  --snail-shell-secondary: #7de7ff;
+  --snail-shell-accent: #ff4fd8;
+  --snail-shell-shadow: #2a1735;
+  position: absolute;
+  left: 2%;
+  bottom: 8%;
+  z-index: 5;
+  width: clamp(12rem, 28vw, 18rem);
+  transform: rotate(-2deg);
+}
+
+.security-dancing-snail {
+  filter: drop-shadow(0 1.1rem 0.9rem rgba(0, 0, 0, 0.44));
+}
+
+.security-badge {
+  position: absolute;
+  right: 14%;
+  bottom: 21%;
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  aspect-ratio: 1;
+  border: 2px solid #111112;
+  border-radius: 50%;
+  color: #111112;
+  background: #ffe66b;
+  font-size: 0.78rem;
+  font-weight: 900;
+  box-shadow: 0 0.35rem 0.8rem rgba(0, 0, 0, 0.28);
+}
+
+.disco-scene::after {
   content: "";
   position: absolute;
   right: 0;
@@ -493,6 +663,20 @@ h1 {
     min-height: 25rem;
   }
 
+  .club-door-scene {
+    min-height: 24rem;
+  }
+
+  .club-door-frame {
+    right: 0;
+    width: min(16rem, 74vw);
+  }
+
+  .security-snail {
+    left: -0.3rem;
+    width: clamp(10rem, 48vw, 13.5rem);
+  }
+
   .mirror-ball {
     top: 0.7rem;
   }
@@ -506,7 +690,7 @@ h1 {
   }
 
   .dance-floor,
-  .stage::after {
+  .disco-scene::after {
     width: 100%;
   }
 }
