@@ -3,6 +3,7 @@ export type AudioStatus = "paused" | "loading" | "playing" | "error";
 export type AudioState = {
   status: AudioStatus;
   errorMessage: string | null;
+  hasEnteredDisco: boolean;
 };
 
 export type AudioEvent =
@@ -23,6 +24,7 @@ export function createInitialAudioState(): AudioState {
   return {
     status: "paused",
     errorMessage: null,
+    hasEnteredDisco: false,
   };
 }
 
@@ -32,22 +34,26 @@ export function audioReducer(state: AudioState, event: AudioEvent): AudioState {
       return {
         status: "loading",
         errorMessage: null,
+        hasEnteredDisco: true,
       };
     case "playback-started":
       return {
         status: "playing",
         errorMessage: null,
+        hasEnteredDisco: true,
       };
     case "playback-paused":
     case "playback-ended":
       return {
         status: "paused",
         errorMessage: null,
+        hasEnteredDisco: state.hasEnteredDisco,
       };
     case "playback-failed":
       return {
         status: "error",
         errorMessage: event.message,
+        hasEnteredDisco: state.hasEnteredDisco,
       };
     default:
       return state;
@@ -83,7 +89,7 @@ export function getAudioControlView(state: AudioState): AudioControlView {
   }
 
   return {
-    label: "Show your snail ID to enter the disco",
+    label: state.hasEnteredDisco ? "Start disco again" : "Show your snail ID to enter the disco",
     statusText: "Music starts after you show your snail ID.",
     ariaPressed: "false",
     disabled: false,

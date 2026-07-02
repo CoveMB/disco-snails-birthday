@@ -27,6 +27,19 @@ describe("audio state", () => {
     expect(view.ariaPressed).toBe("true");
   });
 
+  it("labels a paused disco as restart only after the first entry", () => {
+    const playingState = audioReducer(createInitialAudioState(), {
+      type: "playback-started",
+    });
+    const pausedState = audioReducer(playingState, {
+      type: "playback-paused",
+    });
+    const view = getAudioControlView(pausedState);
+
+    expect(view.label).toBe("Start disco again");
+    expect(view.ariaPressed).toBe("false");
+  });
+
   it("keeps browser playback failures explicit", () => {
     const state = audioReducer(createInitialAudioState(), {
       type: "playback-failed",

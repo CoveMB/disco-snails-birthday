@@ -399,6 +399,7 @@ h1 {
 .disco-scene {
   --disco-room-side-inset: 12%;
   --disco-room-mobile-side-inset: 8%;
+  --disco-room-phone-side-inset: 12%;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.42s ease;
@@ -737,7 +738,7 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: clamp(3.45rem, 7vw, 6.8rem);
+  width: clamp(3.85rem, 7.8vw, 7.55rem);
   opacity: 0;
   transform-origin: 50% 92%;
   will-change: opacity, transform;
@@ -867,11 +868,15 @@ h1 {
 
 @media (max-width: 680px) {
   .hero {
-    width: min(100% - 1rem, 76rem);
+    width: min(100% - 2rem, 76rem);
   }
 
   .hero {
     padding-top: 0.75rem;
+  }
+
+  .disco-scene {
+    --disco-room-side-inset: var(--disco-room-phone-side-inset);
   }
 
   .action-row {
@@ -902,7 +907,7 @@ h1 {
   }
 
   .floor-snail {
-    width: clamp(2.75rem, 12vw, 4.7rem);
+    width: clamp(3.05rem, 13.5vw, 5.2rem);
   }
 }
 

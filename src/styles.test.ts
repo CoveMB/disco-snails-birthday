@@ -9,10 +9,21 @@ const discoRoomSelectors = [
   ".floor-snail-party",
 ] as const;
 
+function getMediaBlock(startQuery: string, endQuery: string): string {
+  const startIndex = styles.indexOf(startQuery);
+  const endIndex = styles.indexOf(endQuery);
+
+  expect(startIndex).toBeGreaterThanOrEqual(0);
+  expect(endIndex).toBeGreaterThan(startIndex);
+
+  return styles.slice(startIndex, endIndex);
+}
+
 describe("disco room layout", () => {
   it("keeps the floor visuals and snail movement area inset from the sides", () => {
     expect(styles).toContain("--disco-room-side-inset: 12%;");
     expect(styles).toContain("--disco-room-mobile-side-inset: 8%;");
+    expect(styles).toContain("--disco-room-phone-side-inset: 12%;");
 
     for (const selector of discoRoomSelectors) {
       const rule = styles.match(new RegExp(`${selector.replaceAll(".", "\\.").replace("::", "::")} \\{[^}]+\\}`));
@@ -21,6 +32,26 @@ describe("disco room layout", () => {
       expect(rule?.[0]).toContain("right: var(--disco-room-side-inset);");
       expect(rule?.[0]).toContain("width: auto;");
     }
+  });
+
+  it("adds extra side margin only at the phone breakpoint", () => {
+    const tabletBreakpoint = getMediaBlock("@media (max-width: 900px)", "@media (max-width: 680px)");
+    const phoneBreakpoint = getMediaBlock("@media (max-width: 680px)", "@media (prefers-reduced-motion: reduce)");
+
+    expect(tabletBreakpoint).toContain("--disco-room-side-inset: var(--disco-room-mobile-side-inset);");
+    expect(tabletBreakpoint).not.toContain("--disco-room-phone-side-inset");
+    expect(phoneBreakpoint).toContain("width: min(100% - 2rem, 76rem);");
+    expect(phoneBreakpoint).toContain("--disco-room-side-inset: var(--disco-room-phone-side-inset);");
+  });
+});
+
+describe("floor snail animation", () => {
+  it("sizes the dancing floor snails a little larger across viewports", () => {
+    const floorSnailRule = styles.match(/\.floor-snail \{[^}]+\}/);
+    const phoneBreakpoint = getMediaBlock("@media (max-width: 680px)", "@media (prefers-reduced-motion: reduce)");
+
+    expect(floorSnailRule?.[0]).toContain("width: clamp(3.85rem, 7.8vw, 7.55rem);");
+    expect(phoneBreakpoint).toContain("width: clamp(3.05rem, 13.5vw, 5.2rem);");
   });
 });
 
