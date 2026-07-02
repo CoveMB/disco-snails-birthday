@@ -17,6 +17,13 @@ export type BirthdayCardData = {
   };
 };
 
+export function buildSiteAssetPath(assetPath: string, siteBase = import.meta.env.BASE_URL): string {
+  const normalizedBase = siteBase.length === 0 || siteBase.endsWith("/") ? siteBase : `${siteBase}/`;
+  const normalizedAssetPath = assetPath.replace(/^\/+/, "");
+
+  return `${normalizedBase}${normalizedAssetPath}`;
+}
+
 export const birthdayCardData: BirthdayCardData = {
   hero: {
     kicker: "Disco Snails Birthday Transmission",
@@ -25,10 +32,10 @@ export const birthdayCardData: BirthdayCardData = {
   track: {
     title: "Disco Snails",
     artist: "Vulfmon & Zachary Barker",
-    audioSrc: "/audio/disco-snails.mp3",
+    audioSrc: buildSiteAssetPath("audio/disco-snails.mp3"),
   },
   art: {
-    heroImageSrc: "/assets/disco-snails-hero.png",
+    heroImageSrc: buildSiteAssetPath("assets/disco-snails-hero.png"),
     heroImageAlt: "Two glossy disco snails dancing under a mirror ball.",
   },
   birthdayMessage: {
