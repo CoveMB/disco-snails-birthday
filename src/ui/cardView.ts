@@ -154,7 +154,10 @@ function renderSecuritySnail(): string {
         gradientId: "security-snail",
         snailDataAttribute: "data-security-snail-svg",
       })}
-      <span class="security-speech-bubble" data-security-speech-bubble aria-hidden="true">ID please</span>
+      <span class="security-speech-bubble" data-security-speech-bubble aria-hidden="true">
+        <span class="security-speech-entry" data-security-entry-message>ID please</span>
+        <span class="security-speech-exit" data-security-exit-message>Bye, be well and sleep tight 💫</span>
+      </span>
     </div>
   `;
 }
@@ -179,32 +182,58 @@ function renderClubDoorEntry(): string {
   `;
 }
 
+function renderBirthdayMessageCard(viewModel: CardViewModel): string {
+  return `
+    <article
+      class="birthday-message-card"
+      data-birthday-message-card
+      aria-label="Birthday card message"
+    >
+      <div class="birthday-message-copy">
+        ${viewModel.birthdayMessage.lines
+          .map((line) => `<p class="birthday-message-line">${escapeHtml(line)}</p>`)
+          .join("")}
+      </div>
+      <div class="action-row birthday-message-actions">
+        <button class="primary-action" type="button" data-exit-disco>
+          <span class="exit-glyph" aria-hidden="true"></span>
+          <span>Exit disco</span>
+        </button>
+      </div>
+    </article>
+  `;
+}
+
 export function renderBirthdayCard(viewModel: CardViewModel): string {
   return `
-    <main class="page-shell" data-card-root data-entry-state="waiting">
+    <main class="page-shell" data-card-root data-entry-state="waiting" data-message-state="intro">
       <canvas class="confetti-canvas" data-confetti-canvas aria-hidden="true"></canvas>
 
       <section class="hero" aria-labelledby="birthday-title">
         <div class="hero-copy" data-hero-copy>
-          <p class="eyebrow entry-reveal entry-reveal-kicker" data-entry-reveal="kicker">${escapeHtml(viewModel.hero.kicker)}</p>
-          <h1 id="birthday-title" class="entry-reveal entry-reveal-title" data-entry-reveal="title">${escapeHtml(viewModel.hero.title)}</h1>
+          <div class="intro-copy" data-intro-copy>
+            <p class="eyebrow entry-reveal entry-reveal-kicker" data-entry-reveal="kicker">${escapeHtml(viewModel.hero.kicker)}</p>
+            <h1 id="birthday-title" class="entry-reveal entry-reveal-title" data-entry-reveal="title">${escapeHtml(viewModel.hero.title)}</h1>
 
-          <div class="action-row" aria-label="Birthday card controls">
-            <button
-              class="primary-action"
-              type="button"
-              data-audio-toggle
-              aria-pressed="${viewModel.audioControl.ariaPressed}"
-              ${viewModel.audioControl.disabled ? "disabled" : ""}
-            >
-              <span class="play-glyph" aria-hidden="true"></span>
-              <span data-audio-label>${escapeHtml(viewModel.audioControl.label)}</span>
-            </button>
+            <div class="action-row" aria-label="Birthday card controls">
+              <button
+                class="primary-action"
+                type="button"
+                data-audio-toggle
+                aria-pressed="${viewModel.audioControl.ariaPressed}"
+                ${viewModel.audioControl.disabled ? "disabled" : ""}
+              >
+                <span class="play-glyph" aria-hidden="true"></span>
+                <span data-audio-label>${escapeHtml(viewModel.audioControl.label)}</span>
+              </button>
+            </div>
+
+            <p class="audio-status" data-audio-status role="status">
+              ${escapeHtml(viewModel.audioControl.statusText)}
+            </p>
           </div>
 
-          <p class="audio-status" data-audio-status role="status">
-            ${escapeHtml(viewModel.audioControl.statusText)}
-          </p>
+          ${renderBirthdayMessageCard(viewModel)}
         </div>
 
         <div class="stage" data-snail-stage aria-label="Animated disco snails birthday scene">

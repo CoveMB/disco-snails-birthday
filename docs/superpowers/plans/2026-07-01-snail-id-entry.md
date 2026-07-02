@@ -19,7 +19,7 @@
 - Do not add a second stage-local button.
 - Do not re-render the full card after entry.
 - The page does not need backward compatibility with the old first-load dancing view.
-- The button must read exactly `Show your snail ID and enter the disco` before entry.
+- The button must read exactly `Show your snail ID to enter the disco` before entry.
 - The status text below the button must still say music starts after interaction.
 - The same click must open the door, request audio playback, fire confetti, and start the current dancing-snail animation.
 
@@ -37,7 +37,7 @@
 ## Acceptance Criteria
 
 - On first load, no audio playback is requested.
-- On first load, the primary action label is `Show your snail ID and enter the disco`.
+- On first load, the primary action label is `Show your snail ID to enter the disco`.
 - On first load, the status text says music starts after the user enters.
 - On first load, the animation side shows a smiling snail security agent in front of a closed club door.
 - On click, the root card state changes to entered and the club door opens.
@@ -51,6 +51,7 @@
 ## Task 0: Preflight
 
 **Files:**
+
 - No file changes.
 
 - [ ] **Step 1: Verify repository state**
@@ -89,6 +90,7 @@ Expected: the current first-load stage is the existing disco scene, and `main.ts
 ## Task 1: Lock New First-Load Copy And Entry Markup
 
 **Files:**
+
 - Modify `src/domain/audioState.test.ts`
 - Modify `src/ui/cardView.test.ts`
 
@@ -97,15 +99,15 @@ Expected: the current first-load stage is the existing disco scene, and `main.ts
 In `src/domain/audioState.test.ts`, change the paused-state expectations to:
 
 ```ts
-  it("starts paused with the snail ID entry call to action", () => {
-    const state = createInitialAudioState();
-    const view = getAudioControlView(state);
+it("starts paused with the snail ID entry call to action", () => {
+  const state = createInitialAudioState();
+  const view = getAudioControlView(state);
 
-    expect(state.status).toBe("paused");
-    expect(view.label).toBe("Show your snail ID and enter the disco");
-    expect(view.statusText).toBe("Music starts after you show your snail ID.");
-    expect(view.ariaPressed).toBe("false");
-  });
+  expect(state.status).toBe("paused");
+  expect(view.label).toBe("Show your snail ID to enter the disco");
+  expect(view.statusText).toBe("Music starts after you show your snail ID.");
+  expect(view.ariaPressed).toBe("false");
+});
 ```
 
 - [ ] **Step 2: Update the render shell test**
@@ -113,24 +115,28 @@ In `src/domain/audioState.test.ts`, change the paused-state expectations to:
 In `src/ui/cardView.test.ts`, update the first test so it requires the new first-load entry state and copy:
 
 ```ts
-  it("renders the card shell, audio asset, and snail ID entry control", () => {
-    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+it("renders the card shell, audio asset, and snail ID entry control", () => {
+  const html = renderBirthdayCard(
+    createCardViewModel(birthdayCardData, createInitialAudioState()),
+  );
 
-    expect(html).toContain('data-card-root');
-    expect(html).toContain('data-entry-state="waiting"');
-    expect(html).toContain('src="/audio/disco-snails.mp3"');
-    expect(html).toContain('data-audio-toggle');
-    expect(html).toContain("Show your snail ID and enter the disco");
-    expect(html).toContain("Music starts after you show your snail ID.");
-    expect(html).toContain('aria-pressed="false"');
-    expect(html).toContain("Music: Vulfmon &amp; Zachary Barker - Disco Snails");
-    expect(html).not.toContain('data-replay-animation');
-    expect(html).not.toContain('party-panel');
-    expect(html).not.toContain("The slowest creatures in the garden somehow got the best table.");
-    expect(html).not.toContain(
-      "Tonight has mirror-ball shell polish, tiny dance-floor ambition, and a suspicious amount of glitter for something moving this slowly.",
-    );
-  });
+  expect(html).toContain("data-card-root");
+  expect(html).toContain('data-entry-state="waiting"');
+  expect(html).toContain('src="/audio/disco-snails.mp3"');
+  expect(html).toContain("data-audio-toggle");
+  expect(html).toContain("Show your snail ID to enter the disco");
+  expect(html).toContain("Music starts after you show your snail ID.");
+  expect(html).toContain('aria-pressed="false"');
+  expect(html).toContain("Music: Vulfmon &amp; Zachary Barker - Disco Snails");
+  expect(html).not.toContain("data-replay-animation");
+  expect(html).not.toContain("party-panel");
+  expect(html).not.toContain(
+    "The slowest creatures in the garden somehow got the best table.",
+  );
+  expect(html).not.toContain(
+    "Tonight has mirror-ball shell polish, tiny dance-floor ambition, and a suspicious amount of glitter for something moving this slowly.",
+  );
+});
 ```
 
 - [ ] **Step 3: Add an entry-scene render test**
@@ -138,16 +144,20 @@ In `src/ui/cardView.test.ts`, update the first test so it requires the new first
 In `src/ui/cardView.test.ts`, add this test after the shell test:
 
 ```ts
-  it("renders the initial club-door entry scene alongside the disco layer", () => {
-    const html = renderBirthdayCard(createCardViewModel(birthdayCardData, createInitialAudioState()));
+it("renders the initial club-door entry scene alongside the disco layer", () => {
+  const html = renderBirthdayCard(
+    createCardViewModel(birthdayCardData, createInitialAudioState()),
+  );
 
-    expect(html).toContain('data-entry-scene');
-    expect(html).toContain('data-club-door');
-    expect(html).toContain('data-security-snail');
-    expect(html).toContain('aria-label="Smiling snail security agent checking snail IDs"');
-    expect(html).toContain('data-disco-scene');
-    expect(html).toContain('data-floor-snail-party');
-  });
+  expect(html).toContain("data-entry-scene");
+  expect(html).toContain("data-club-door");
+  expect(html).toContain("data-security-snail");
+  expect(html).toContain(
+    'aria-label="Smiling snail security agent checking snail IDs"',
+  );
+  expect(html).toContain("data-disco-scene");
+  expect(html).toContain("data-floor-snail-party");
+});
 ```
 
 - [ ] **Step 4: Run focused tests and confirm they fail**
@@ -163,6 +173,7 @@ Expected: fails because production still returns `Start the disco`, does not ren
 ## Task 2: Implement Audio Copy And Entry Markup
 
 **Files:**
+
 - Modify `src/domain/audioState.ts`
 - Modify `src/ui/cardView.ts`
 
@@ -171,12 +182,12 @@ Expected: fails because production still returns `Start the disco`, does not ren
 In `src/domain/audioState.ts`, change only the final paused return value in `getAudioControlView`:
 
 ```ts
-  return {
-    label: "Show your snail ID and enter the disco",
-    statusText: "Music starts after you show your snail ID.",
-    ariaPressed: "false",
-    disabled: false,
-  };
+return {
+  label: "Show your snail ID to enter the disco",
+  statusText: "Music starts after you show your snail ID.",
+  ariaPressed: "false",
+  disabled: false,
+};
 ```
 
 - [ ] **Step 2: Add entry-scene render helpers**
@@ -279,6 +290,7 @@ Expected: the two focused test files pass.
 ## Task 3: Wire Entered State And Deferred Motion
 
 **Files:**
+
 - Modify `src/controllers/viewController.ts`
 - Modify `src/controllers/motionController.ts`
 - Modify `src/main.ts`
@@ -298,7 +310,7 @@ export function markEntered(refs: CardRefs): void {
 In `src/controllers/motionController.ts`, remove the hero-copy target from the intro timeline so entry only animates the disco side. Delete this query:
 
 ```ts
-  const heroCopy = root.querySelector<HTMLElement>("[data-hero-copy]");
+const heroCopy = root.querySelector<HTMLElement>("[data-hero-copy]");
 ```
 
 Then remove `!heroCopy ||` from the missing-target guard.
@@ -329,7 +341,7 @@ Delete these two timeline calls:
 Then add a `hasPlayedIntro` flag near the `timeline` declaration:
 
 ```ts
-  let hasPlayedIntro = false;
+let hasPlayedIntro = false;
 ```
 
 Then change `playIntro` to the idempotent version so repeat clicks do not restart the animation:
@@ -353,7 +365,11 @@ Do not call `playIntro` from `createMotionController`.
 In `src/main.ts`, change the import from `viewController` to include `markEntered`:
 
 ```ts
-import { getCardRefs, markEntered, updateAudioControl } from "./controllers/viewController";
+import {
+  getCardRefs,
+  markEntered,
+  updateAudioControl,
+} from "./controllers/viewController";
 ```
 
 Then replace the audio-toggle listener and remove the immediate intro/confetti calls at the bottom:
@@ -387,6 +403,7 @@ Expected: TypeScript passes.
 ## Task 4: Style Entry And Disco Scene States
 
 **Files:**
+
 - Modify `src/styles.css`
 
 - [ ] **Step 1: Add scene-layer base styles**
@@ -452,7 +469,11 @@ In `src/styles.css`, after the scene-layer styles, add:
   border: 0.24rem solid rgba(255, 250, 242, 0.82);
   border-radius: 8px 8px 0 0;
   background:
-    radial-gradient(circle at 50% 18%, rgba(255, 230, 107, 0.28), transparent 24%),
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255, 230, 107, 0.28),
+      transparent 24%
+    ),
     linear-gradient(180deg, rgba(125, 231, 255, 0.16), rgba(17, 17, 18, 0.92));
   box-shadow:
     0 0 2rem rgba(125, 231, 255, 0.28),
@@ -497,7 +518,12 @@ In `src/styles.css`, after the scene-layer styles, add:
 .club-door-glow {
   position: absolute;
   inset: 9% 17% 0;
-  background: linear-gradient(180deg, rgba(255, 230, 107, 0.5), rgba(255, 79, 216, 0.2), transparent);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 230, 107, 0.5),
+    rgba(255, 79, 216, 0.2),
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.4s ease 0.16s;
 }
@@ -584,37 +610,37 @@ Keep the existing declaration block unchanged, except set `width: 96%;` and `hei
 Inside the existing `@media (max-width: 680px)` block, add:
 
 ```css
-  .club-door-scene {
-    min-height: 24rem;
-  }
+.club-door-scene {
+  min-height: 24rem;
+}
 
-  .club-door-frame {
-    right: 0;
-    width: min(16rem, 74vw);
-  }
+.club-door-frame {
+  right: 0;
+  width: min(16rem, 74vw);
+}
 
-  .security-snail {
-    left: -0.3rem;
-    width: clamp(10rem, 48vw, 13.5rem);
-  }
+.security-snail {
+  left: -0.3rem;
+  width: clamp(10rem, 48vw, 13.5rem);
+}
 ```
 
 Change the existing selector:
 
 ```css
-  .dance-floor,
-  .stage::after {
-    width: 100%;
-  }
+.dance-floor,
+.stage::after {
+  width: 100%;
+}
 ```
 
 to:
 
 ```css
-  .dance-floor,
-  .disco-scene::after {
-    width: 100%;
-  }
+.dance-floor,
+.disco-scene::after {
+  width: 100%;
+}
 ```
 
 - [ ] **Step 5: Run build**
@@ -630,6 +656,7 @@ Expected: TypeScript and Vite build pass.
 ## Task 5: Full Verification And Local Preview
 
 **Files:**
+
 - No planned source changes.
 
 - [ ] **Step 1: Run the full test suite**

@@ -6,6 +6,7 @@ export type CardViewModel = {
   hero: BirthdayCardData["hero"];
   track: BirthdayCardData["track"];
   art: BirthdayCardData["art"];
+  birthdayMessage: BirthdayCardData["birthdayMessage"];
   musicCredit: string;
   audioControl: AudioControlView;
 };
@@ -19,6 +20,7 @@ export function createCardViewModel(data: BirthdayCardData, audioState: AudioSta
     hero: data.hero,
     track: data.track,
     art: data.art,
+    birthdayMessage: data.birthdayMessage,
     musicCredit: formatMusicCredit(data.track),
     audioControl: getAudioControlView(audioState),
   };

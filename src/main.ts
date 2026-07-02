@@ -2,7 +2,13 @@ import "./styles.css";
 import { createAudioController } from "./controllers/audioController";
 import { createConfettiController } from "./controllers/confettiController";
 import { createMotionController } from "./controllers/motionController";
-import { getCardRefs, markEntered, updateAudioControl } from "./controllers/viewController";
+import {
+  getCardRefs,
+  markEntered,
+  markExited,
+  scheduleBirthdayCardReveal,
+  updateAudioControl,
+} from "./controllers/viewController";
 import { birthdayCardData } from "./data/birthdayCard";
 import { audioReducer, createInitialAudioState, type AudioEvent } from "./domain/audioState";
 import { createCardViewModel } from "./domain/cardViewModel";
@@ -34,8 +40,20 @@ function dispatchAudio(event: AudioEvent): void {
 const audioController = createAudioController(refs.audio, dispatchAudio);
 
 refs.audioToggle.addEventListener("click", () => {
+  const isFirstEntry = refs.root.dataset.entryState !== "entered";
+
   markEntered(refs);
+
+  if (isFirstEntry) {
+    scheduleBirthdayCardReveal(refs);
+  }
+
   motionController.playIntro();
   audioController.toggle(audioState);
   confettiController.burst();
+});
+
+refs.exitDisco.addEventListener("click", () => {
+  markExited(refs);
+  audioController.stop();
 });

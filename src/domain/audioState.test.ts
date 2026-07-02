@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { audioReducer, createInitialAudioState, getAudioControlView } from "./audioState";
+import {
+  audioReducer,
+  createInitialAudioState,
+  getAudioControlView,
+} from "./audioState";
 
 describe("audio state", () => {
   it("starts paused with the snail ID entry call to action", () => {
@@ -7,13 +11,15 @@ describe("audio state", () => {
     const view = getAudioControlView(state);
 
     expect(state.status).toBe("paused");
-    expect(view.label).toBe("Show your snail ID and enter the disco");
+    expect(view.label).toBe("Show your snail ID to enter the disco");
     expect(view.statusText).toBe("Music starts after you show your snail ID.");
     expect(view.ariaPressed).toBe("false");
   });
 
   it("switches to playing after playback starts", () => {
-    const state = audioReducer(createInitialAudioState(), { type: "playback-started" });
+    const state = audioReducer(createInitialAudioState(), {
+      type: "playback-started",
+    });
     const view = getAudioControlView(state);
 
     expect(state.status).toBe("playing");

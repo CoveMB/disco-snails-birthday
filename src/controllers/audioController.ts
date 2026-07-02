@@ -2,6 +2,7 @@ import type { AudioEvent, AudioState } from "../domain/audioState";
 
 export type AudioController = {
   toggle: (state: AudioState) => void;
+  stop: () => void;
   destroy: () => void;
 };
 
@@ -58,6 +59,11 @@ export function createAudioController(
             message: getPlaybackErrorMessage(error),
           });
         });
+    },
+    stop: () => {
+      audio.pause();
+      audio.currentTime = 0;
+      dispatch({ type: "playback-paused" });
     },
     destroy: () => {
       audio.pause();

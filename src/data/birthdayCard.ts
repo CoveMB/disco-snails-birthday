@@ -12,6 +12,9 @@ export type BirthdayCardData = {
     heroImageSrc: string;
     heroImageAlt: string;
   };
+  birthdayMessage: {
+    lines: string[];
+  };
 };
 
 export const birthdayCardData: BirthdayCardData = {
@@ -27,5 +30,13 @@ export const birthdayCardData: BirthdayCardData = {
   art: {
     heroImageSrc: "/assets/disco-snails-hero.png",
     heroImageAlt: "Two glossy disco snails dancing under a mirror ball.",
+  },
+  birthdayMessage: {
+    lines: [
+      "Thanks for your disco moves little snail 🪩",
+      "You are such a wonderful little being bringing care and creativity all around you ✨",
+      "Get all you're wishing for, you deserve it 🙌",
+      "Love 💖",
+    ],
   },
 };

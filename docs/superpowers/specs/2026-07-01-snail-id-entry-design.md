@@ -4,7 +4,7 @@
 
 Replace the current first-load dancing scene with a club-door entry state. The first view shows a smiling snail security agent in front of a club door. Music is not playing yet.
 
-The main action says: "Show your snail ID and enter the disco". The status text below it should continue to make clear that music starts after the click.
+The main action says: "Show your snail ID to enter the disco". The status text below it should continue to make clear that music starts after the click.
 
 After the user clicks the action, the club door opens, the music starts, and the page reveals the existing dancing-snail animation.
 
@@ -40,7 +40,7 @@ The existing audio state remains the source for button label, disabled state, pr
 
 On load:
 
-- The button label is "Show your snail ID and enter the disco".
+- The button label is "Show your snail ID to enter the disco".
 - The audio status says music will start after the user enters.
 - The stage shows the security-agent snail and closed door.
 - The dancing-snail party is hidden or visually inactive.

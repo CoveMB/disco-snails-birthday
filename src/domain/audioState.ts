@@ -83,7 +83,7 @@ export function getAudioControlView(state: AudioState): AudioControlView {
   }
 
   return {
-    label: "Show your snail ID and enter the disco",
+    label: "Show your snail ID to enter the disco",
     statusText: "Music starts after you show your snail ID.",
     ariaPressed: "false",
     disabled: false,
