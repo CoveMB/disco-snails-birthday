@@ -53,7 +53,7 @@ describe("view controller", () => {
     expect(refs.root.dataset.messageState).toBe("intro");
   });
 
-  it("schedules the birthday card reveal 20 seconds after entry", () => {
+  it("schedules the birthday card reveal 16 seconds after entry", () => {
     const refs = {
       root: {
         dataset: {
@@ -63,12 +63,12 @@ describe("view controller", () => {
     } as unknown as CardRefs;
     const scheduledCallbacks: Array<() => void> = [];
     const setTimeout = (callback: () => void, delay: number): number => {
-      expect(delay).toBe(20_000);
+      expect(delay).toBe(16_000);
       scheduledCallbacks.push(callback);
       return 1;
     };
 
-    expect(birthdayCardRevealDelayMs).toBe(20_000);
+    expect(birthdayCardRevealDelayMs).toBe(16_000);
 
     scheduleBirthdayCardReveal(refs, setTimeout);
 

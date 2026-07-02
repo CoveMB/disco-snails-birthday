@@ -12,7 +12,7 @@ export type CardRefs = {
 
 type TimeoutScheduler = (callback: () => void, delay: number) => number;
 
-export const birthdayCardRevealDelayMs = 20_000;
+export const birthdayCardRevealDelayMs = 16_000;
 
 function queryRequired<T extends Element>(root: ParentNode, selector: string): T {
   const element = root.querySelector<T>(selector);
